@@ -1,0 +1,26 @@
+{
+  "skill_name": "jcore-plugin",
+  "evals": [
+    {
+      "id": 1,
+      "name": "new-plugin-announcement",
+      "prompt": "Create a new JCORE plugin called jcore-ilmoitus that lets admins configure a site-wide announcement banner (message text, on/off toggle, optional link) from a settings page in wp-admin, and shows it at the top of every front-end page.",
+      "expected_output": "A complete jcore-ilmoitus plugin following Turva conventions: namespaced autoloaded classes, jcore-update registration, React settings app over a jcore-ilmoitus/v1 REST route, release.yml/foonver/.distignore/Makefile tooling, readme.txt, uninstall.php, passing lint and build.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "name": "migrate-old-plugin",
+      "prompt": "This plugin is a bit outdated. Can you update it to a similar state as jcore-turva or jcore-maailma?",
+      "expected_output": "jcore-portti at v0.3.1 migrated: foonver + reusable publish workflow, build/ untracked, jcore-update registered, modern tooling, real lint bugs (text domain, conditional hooks) fixed in a separate fix commit, lint and build passing.",
+      "files": ["jcore-portti @ 620fd03"]
+    },
+    {
+      "id": 3,
+      "name": "add-impression-tracking",
+      "prompt": "Add impression tracking to jcore-portti: count how many times each campaign content item is shown in a portal slot, store the counts in a custom database table, expose them through a REST endpoint admins can read, and show the count as a column in the campaign content list in wp-admin.",
+      "expected_output": "Custom table created via a versioned maybe_upgrade migration, prefixed names, REST route under jcore-portti/v1 with a capability check, admin column, uninstall cleanup, conventional commit, lint passing.",
+      "files": ["jcore-portti @ chore/modernize-tooling"]
+    }
+  ]
+}
