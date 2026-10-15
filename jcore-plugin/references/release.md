@@ -12,7 +12,7 @@
 
 `.github/workflows/release.yml` (template in `templates/.github/workflows/release.yml`) has three jobs:
 
-1. **check** runs on every PR and every push to `main`. It installs, runs `composer lint`, `pnpm lint:js`, `pnpm lint:css`, `pnpm build` and `pnpm i18n`. It then assembles `dist/<slug>` with `rsync --exclude-from=.distignore` after `composer install --no-dev`, and runs `WordPress/plugin-check-action` on that, excluding `vendor`. Plugin Check needs a valid `readme.txt`.
+1. **check** runs on every PR and every push to `main`. It installs, runs `composer lint`, `pnpm lint:js`, `pnpm lint:css`, `pnpm build` and `pnpm i18n`. It then assembles `dist/<slug>` with `rsync --exclude-from=.distignore --exclude=.distignore` after `composer install --no-dev` (`.distignore` doesn't list itself, and Plugin Check warns about any hidden file), and runs `WordPress/plugin-check-action` on that, excluding `vendor`. Plugin Check needs a valid `readme.txt`.
 2. **release** runs only on push to `main`, after check. `foonly/foonver` with `command: auto` reads the commits since the last `v*` tag:
    - `BREAKING CHANGE:` or `type!:` → major
    - any `feat` → minor

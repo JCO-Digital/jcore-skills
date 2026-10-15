@@ -100,7 +100,7 @@ Only add tables when options, post meta or a custom post type really won't do. W
 ## Translations
 
 - Every `__()`/`_e()`/`esc_html__()` uses the literal text domain `'jcore-<word>'`. A different domain (even `'jcore'`) silently makes the string untranslatable. PHPCS catches it now, and older plugins often have it wrong.
-- `Plugin::load_textdomain()` calls `load_plugin_textdomain()` on `init`. Just-in-time loading only reads `wp-content/languages/`, which these plugins never ship to.
+- `Plugin::load_textdomain()` calls `load_plugin_textdomain()` on `init`. Just-in-time loading only reads `wp-content/languages/`, which these plugins never ship to. Plugin Check flags the call as discouraged, because WordPress.org plugins don't need it; the template silences that with a `phpcs:ignore` giving this reason. Keep it: removing the call breaks the bundled translations.
 - JS strings use `@wordpress/i18n` with the same domain. Each script handle that has strings needs `wp_set_script_translations( $handle, 'jcore-<word>', JCORE_<WORD>_PATH . 'languages' )`. Blocks get this from `set_block_script_translations()`.
 - `pnpm i18n` regenerates `languages/jcore-<word>.pot`, compiles `.mo`, and generates the JS `.json` files from committed `.po` files (fi and sv_SE are the usual locales). Only `.po` files are committed; CI generates the rest in `make ci`.
 

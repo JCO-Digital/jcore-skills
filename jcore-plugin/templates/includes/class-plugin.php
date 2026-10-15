@@ -94,6 +94,7 @@ final class Plugin {
 	 * @return void
 	 */
 	public function load_textdomain(): void {
+		// phpcs:ignore PluginCheck.CodeAnalysis.DiscouragedFunctions.load_plugin_textdomainFound -- Not hosted on WordPress.org; translations ship in this plugin's languages/ folder.
 		load_plugin_textdomain( '{{slug}}', false, dirname( plugin_basename( {{CONST}}_FILE ) ) . '/languages' );
 	}
 {{#blocks}}
