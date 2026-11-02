@@ -12,7 +12,7 @@ A checklist for bringing a pre-2026 JCORE plugin (old release action, committed 
 ## 1. Release pipeline
 
 - Delete `.github/workflows/push.yml` (conventional-changelog + `EndBug/add-and-commit` + `CasperWA/push-protected`), `pull.yml` (folded into the check job), `versionSync.js` and `.zipexclude`/`zip_exclude.txt`.
-- Add `release.yml` from the template: `slug`, `plugin_file`, `dist_repo`. If the plugin has no `readme.txt` yet, either write one (preferred, since the update popup and Plugin Check need it) or leave out the Plugin Check step and say so.
+- Add `release.yml` from the template: `slug`, `plugin_file`, `dist_repo`, and `dist_deploy: true` if the plugin already publishes to a dist repo (the template defaults to `false`, which would stop its Composer updates). If the plugin has no `readme.txt` yet, either write one (preferred, since the update popup and Plugin Check need it) or leave out the Plugin Check step and say so.
 - Add `.foonver.toml`. With `readme.txt`, use the wordpress changelog format. Otherwise use `changelog = true` into the existing `CHANGELOG.md`, whose older entries are in conventional-changelog format. foonver prepends below them. Suggest a `# Changelog` heading.
 - Stop committing `build/`: `git rm -r --cached build`, add `/build/` to `.gitignore`, and drop `build/* merge=ours` from `.gitattributes`. The local `build/` stays on disk.
 - `label.yml` (jcore-module-actions PR labeler) is harmless. Keep it unless the user wants it gone.

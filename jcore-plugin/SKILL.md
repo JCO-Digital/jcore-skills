@@ -9,7 +9,7 @@ J&Co Digital's WordPress plugins share one layout, one toolchain and one release
 
 What makes these plugins different from a generic WordPress plugin:
 
-- **Distribution** is private: a release zip on GitHub, registered with `https://update.jcore.fi/v1`, and a Composer "dist" repo on `git.jcore.fi`. Sites update through the bundled `jcodigital/jcore-update` client. Nothing goes to wordpress.org, but the code still follows its guidelines and passes Plugin Check.
+- **Distribution** is private: a release zip on GitHub, registered with `https://update.jcore.fi/v1`, and, for plugins with `dist_deploy: true`, a Composer "dist" repo on `git.jcore.fi`. Sites update through the bundled `jcodigital/jcore-update` client. Nothing goes to wordpress.org, but the code still follows its guidelines and passes Plugin Check.
 - **Versions are never edited by hand.** foonver derives them from Conventional Commit messages on `main` and writes them into the plugin header, `readme.txt` and `package.json`.
 - **Build output is not committed.** `build/` and `vendor/` are produced in CI and shipped in the zip.
 
@@ -39,7 +39,7 @@ python3 ~/.claude/skills/jcore-plugin/scripts/scaffold.py <target-dir> \
 
 With `--blocks`, the build fails until `src/` has at least one block: `cd src && npx @wordpress/create-block@latest <block> --no-plugin --variant dynamic --namespace jco --textdomain <slug>`, then `pnpm format`. Its `render.php` also needs the small PHPCS fixes in `references/php-conventions.md` → Blocks.
 
-Then: `git init`, add a `LICENSE` (copy Turva's GPL-2.0 text), `pnpm install && composer install`, `pnpm build`, `pnpm check`, and fill in `readme.txt` (it is user-facing: the update popup on sites renders it). Before the first release the GitHub repo needs the secrets and dist repo listed in `references/release.md` — tell the user, you can't create those.
+Then: `git init`, add a `LICENSE` (copy Turva's GPL-2.0 text), `pnpm install && composer install`, `pnpm build`, `pnpm check`, and fill in `readme.txt` (it is user-facing: the update popup on sites renders it). Before the first release the slug must be registered with update.jcore.fi (`jcore-register-plugin`), and the GitHub repo needs the secrets listed in `references/release.md`, plus a dist repo if `dist_deploy` is on. Tell the user; you can't create the secrets or the dist repo.
 
 ## Migrate an older plugin
 
@@ -80,4 +80,4 @@ For release-shaped changes also simulate what ships — `references/release.md` 
 
 - Anything that renames a slug, option, meta key, table, post type, block name or REST route on a released plugin.
 - Breaking changes (a major bump): confirm the user wants sites to need an opt-in.
-- Creating GitHub secrets, the dist repo, or registering a slug with update.jcore.fi — the user has to do these.
+- Creating GitHub secrets or the dist repo, or registering a slug on update.jcore.fi (a production write). The user does these; you can run `jcore-register-plugin --dry-run`.

@@ -102,6 +102,9 @@ jobs:
       version: ${{ needs.release.outputs.version }}
       release_notes: ${{ needs.release.outputs.release_notes }}
       plugin_file: "{{slug}}.php"
+      # Composer dist repo push, off by default. Set to true once the bare
+      # repo exists and sites install this plugin through Composer.
+      dist_deploy: false
       dist_repo: "git@git.jcore.fi:/srv/git/{{slug}}.git"
       slack_channel: "#jcore_updates"
     secrets:

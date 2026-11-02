@@ -19,7 +19,7 @@
    - anything else, including `chore`, `docs` and `ci` → patch
 
    It syncs the version into the files in `.foonver.toml` `version-sync` (the main PHP file and `readme.txt`; `package.json` is its own version file), writes the changelog into `readme.txt` under `== Changelog ==` (wordpress format), commits `vX.Y.Z [skip ci]`, tags and pushes. Its outputs (`is_bumped`, `version`, `release_notes`) feed the next job.
-3. **publish** calls `JCO-Digital/jcore-update/.github/workflows/reusable-plugin-publish.yml@main` with `slug`, `version`, `release_notes`, `plugin_file`, `dist_repo` and `slack_channel`.
+3. **publish** calls `JCO-Digital/jcore-update/.github/workflows/reusable-plugin-publish.yml@main` with `slug`, `version`, `release_notes`, `plugin_file`, `dist_deploy`, `dist_repo` and `slack_channel`.
 
 Consequences worth telling users:
 
@@ -37,8 +37,8 @@ Read `jcore-update/.github/workflows/reusable-plugin-publish.yml` for the source
 4. **Zips.** It prefers `.zipexclude`, then `zip_exclude.txt`, then `.distignore`. With only `.distignore`, it rsyncs into `<slug>/` and zips that, so the archive has the usual top-level folder. Modern plugins delete `.zipexclude` and keep a single anchored `.distignore`.
 5. **Reads metadata** by grepping `Requires at least:`, `Tested up to:` and `Requires PHP:` from the main plugin file. All three must be in the header.
 6. **Creates the GitHub release** with the zip attached.
-7. **POSTs to `https://update.jcore.fi/v1/versions`** with slug, version, the download URL, changelog and requirements. This uses the `UPDATE_API_KEY` secret.
-8. **Pushes to the dist repo**, if `dist_repo` and `DIST_REPO_SSH_KEY` are set. It restores the unscoped sources, rsyncs everything except `vendor/` (honouring `.distignore`, but always keeping `composer.json`), writes `.distignore` as the dist repo's `.gitignore`, commits, tags and pushes. Composer-managed sites install from there, which is why `composer.json` must ship and `.distignore` keeps `/composer.json` commented out.
+7. **POSTs to `https://update.jcore.fi/v1/versions`** with slug, version, the download URL, changelog and requirements. This uses the `UPDATE_API_KEY` secret. The POST uses `curl --fail-with-body`, so a rejected version fails the job: a 401 is a bad key, and a 500 "FOREIGN KEY constraint failed" means the slug was never registered. The steps after it don't run.
+8. **Pushes to the dist repo**, only with `dist_deploy: true` (default `false`). It then needs `dist_repo` and `DIST_REPO_SSH_KEY` and fails without them. `dist_repo` without `dist_deploy: true` only logs a "Dist deploy disabled" warning. It restores the unscoped sources, rsyncs everything except `vendor/` (honouring `.distignore`, but always keeping `composer.json`), writes `.distignore` as the dist repo's `.gitignore`, commits, tags and pushes. Composer-managed sites install from there, which is why `composer.json` must ship and `.distignore` keeps `/composer.json` commented out.
 9. **Posts to Slack**, if `slack_channel` and `SLACK_TOKEN` are set.
 
 ## One-time setup for a new plugin
@@ -46,8 +46,8 @@ Read `jcore-update/.github/workflows/reusable-plugin-publish.yml` for the source
 The user (not you) has to:
 
 - Create `JCO-Digital/<slug>` on GitHub and add the secrets `UPDATE_API_KEY`, `DIST_REPO_SSH_KEY` and `SLACK_BOT_TOKEN`. Org-level secrets may already cover these, so ask.
-- Create the dist repo `git@git.jcore.fi:/srv/git/<slug>.git`, or drop `dist_repo` from the workflow if the plugin won't be installed through Composer.
-- Make sure the slug is known to update.jcore.fi if the service requires registration.
+- Register the slug with update.jcore.fi. Without it the first release fails at "Publish to Update API". Use `jcore-register-plugin` from the [update-api releases](https://github.com/JCO-Digital/update-api/releases) (or `go run ./cmd/jcore-register-plugin` in an update-api checkout). With the admin key in `UPDATE_API_KEY` or `UPDATE_API_KEY_FILE`, run `jcore-register-plugin --dry-run <plugin-dir>` and then without `--dry-run`. It reads the slug and name from the plugin, leaves an already-registered slug alone, and lists the remaining setup. You may run the dry run; the real run writes to production, so leave it to the user unless they ask.
+- Only if sites install the plugin through Composer: create the dist repo `git@git.jcore.fi:/srv/git/<slug>.git` and set `dist_deploy: true` in `release.yml`. The template leaves it `false`.
 - Protect `main` so foonver's push works (it pushes with the workflow token, so the branch rules must allow it).
 
 foonver reads the current version from `package.json` (`0.1.0` in the template) and bumps from there. A first merge containing a `feat` releases **0.2.0**; one with only fixes or chores releases 0.1.1. To preview any release, run `foonver auto --dry-run` locally. It lists the bump, every file and match it will sync, and whether it found the changelog marker.
@@ -72,7 +72,9 @@ Expect the main file, `uninstall.php`, `readme.txt`, `composer.json`, `includes/
 | --- | --- |
 | No new tag after merge | check job failed (lint, build, Plugin Check), or the only commits since the last tag are foonver's own `[skip ci]` commits |
 | Tag exists, no GitHub release | publish job failed. Look at `make ci` (missing target, pnpm/composer failure) or the scoping step |
-| Release exists, sites don't see it | the POST to update.jcore.fi failed (`UPDATE_API_KEY`), or it's a major bump and sites are waiting for the admin to click "Allow upgrade to vN.x" |
+| Publish job fails at "Publish to Update API" | 500 "FOREIGN KEY constraint failed": the slug isn't registered, so run `jcore-register-plugin` and re-run the job. 401: `UPDATE_API_KEY` is wrong or missing |
+| Release exists, sites don't see it | it's a major bump and sites are waiting for the admin to click "Allow upgrade to vN.x" |
+| Composer-managed sites don't get the release | `dist_deploy` isn't `true` (look for the "Dist deploy disabled" warning), or the dist push step failed |
 | Fatal "Class Jcore\Update\… not found" on a site | a reference to the library that php-scoper couldn't rewrite (string-built class name, file under `build/`) |
 | Update popup is empty or says "Plugin not found" | `readme.txt` missing or malformed. The library parses it for the popup |
 | Wrong version in header after release | the main file's version line doesn't match `Version:` / `define( '…_VERSION', 'x' )` form, so version-sync missed it |
