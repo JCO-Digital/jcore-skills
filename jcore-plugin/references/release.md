@@ -46,7 +46,7 @@ Read `jcore-update/.github/workflows/reusable-plugin-publish.yml` for the source
 The user (not you) has to:
 
 - Create `JCO-Digital/<slug>` on GitHub and add the secrets `UPDATE_API_KEY`, `DIST_REPO_SSH_KEY` and `SLACK_BOT_TOKEN`. Org-level secrets may already cover these, so ask.
-- Register the slug with update.jcore.fi. Without it the first release fails at "Publish to Update API". Use `jcore-register-plugin` from the [update-api releases](https://github.com/JCO-Digital/update-api/releases) (or `go run ./cmd/jcore-register-plugin` in an update-api checkout). With the admin key in `UPDATE_API_KEY` or `UPDATE_API_KEY_FILE`, run `jcore-register-plugin --dry-run <plugin-dir>` and then without `--dry-run`. It reads the slug and name from the plugin, leaves an already-registered slug alone, and lists the remaining setup. You may run the dry run; the real run writes to production, so leave it to the user unless they ask.
+- Register the slug with update.jcore.fi. Without it the first release fails at "Publish to Update API". Use `jcore-register-plugin` from the [update-api releases](https://github.com/JCO-Digital/update-api/releases) (or `go run ./cmd/jcore-register-plugin` in an update-api checkout). The admin key is in Bitwarden. It's the same value as the `UPDATE_API_KEY` repo secret, which GitHub can't show. Ask the user to put it in `UPDATE_API_KEY` or in a file named by `UPDATE_API_KEY_FILE` (mode 600); never take it as a command-line argument or print it. Then run `jcore-register-plugin --dry-run <plugin-dir>` and then without `--dry-run`. It reads the slug and name from the plugin, leaves an already-registered slug alone, and lists the remaining setup. You may run the dry run; the real run writes to production, so leave it to the user unless they ask.
 - Only if sites install the plugin through Composer: create the dist repo `git@git.jcore.fi:/srv/git/<slug>.git` and set `dist_deploy: true` in `release.yml`. The template leaves it `false`.
 - Protect `main` so foonver's push works (it pushes with the workflow token, so the branch rules must allow it).
 
@@ -72,7 +72,7 @@ Expect the main file, `uninstall.php`, `readme.txt`, `composer.json`, `includes/
 | --- | --- |
 | No new tag after merge | check job failed (lint, build, Plugin Check), or the only commits since the last tag are foonver's own `[skip ci]` commits |
 | Tag exists, no GitHub release | publish job failed. Look at `make ci` (missing target, pnpm/composer failure) or the scoping step |
-| Publish job fails at "Publish to Update API" | 500 "FOREIGN KEY constraint failed": the slug isn't registered, so run `jcore-register-plugin` and re-run the job. 401: `UPDATE_API_KEY` is wrong or missing |
+| Publish job fails at "Publish to Update API" | 500 "FOREIGN KEY constraint failed": the slug isn't registered, so run `jcore-register-plugin` and re-run the job. 401: `UPDATE_API_KEY` is wrong or missing (the current key is in Bitwarden) |
 | Release exists, sites don't see it | it's a major bump and sites are waiting for the admin to click "Allow upgrade to vN.x" |
 | Composer-managed sites don't get the release | `dist_deploy` isn't `true` (look for the "Dist deploy disabled" warning), or the dist push step failed |
 | Fatal "Class Jcore\Update\… not found" on a site | a reference to the library that php-scoper couldn't rewrite (string-built class name, file under `build/`) |
