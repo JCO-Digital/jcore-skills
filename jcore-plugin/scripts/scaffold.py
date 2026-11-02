@@ -2,6 +2,7 @@
 """Render the jcore plugin templates into a plugin directory.
 
 New plugin:   scaffold.py ../jcore-example --name "JCORE Example" --description "…" [--admin] [--blocks]
+Add-on:       scaffold.py ../jcore-taika-acf --name "JCORE Taika ACF" --description "…" --requires jcore-taika
 Migration:    scaffold.py . --name "JCORE Portti" --description "…" --blocks --diff
 
 Existing files are never overwritten. With --diff nothing is written; each
@@ -72,6 +73,14 @@ def main() -> int:
     parser.add_argument("--description", required=True, help="One-sentence description.")
     parser.add_argument("--admin", action="store_true", help="Settings screen with a React app and REST routes.")
     parser.add_argument("--blocks", action="store_true", help="Register blocks from build/blocks-manifest.php.")
+    parser.add_argument(
+        "--requires",
+        action="append",
+        default=[],
+        metavar="SLUG",
+        help="Plugin this one depends on (Requires Plugins header); repeatable. jcore-* slugs install from their "
+        "GitHub releases in Playground and Plugin Check, others from wordpress.org.",
+    )
     parser.add_argument("--tested", default="7.1", help='"Tested up to" WordPress version (default 7.1).')
     parser.add_argument("--port", help="Playground port (default: derived from the slug).")
     parser.add_argument("--diff", action="store_true", help="Show differences against existing files; write nothing.")
@@ -83,6 +92,12 @@ def main() -> int:
         print(f"error: directory name {slug!r} is not a jcore slug (jcore-<word>)", file=sys.stderr)
         return 2
 
+    requires = [r.strip() for item in args.requires for r in item.split(",") if r.strip()]
+    bad = [r for r in requires if not re.match(r"^[a-z0-9]+(?:-[a-z0-9]+)*$", r)]
+    if bad:
+        print(f"error: not plugin slugs: {', '.join(bad)}", file=sys.stderr)
+        return 2
+
     values = names(slug)
     values.update(
         name=args.name,
@@ -90,8 +105,10 @@ def main() -> int:
         tested=args.tested,
         port=args.port or str(8800 + zlib.crc32(slug.encode()) % 100),
         landing=f"/wp-admin/options-general.php?page={slug}" if args.admin else "/wp-admin/plugins.php",
+        requires=", ".join(requires),
+        requires_args=" ".join(requires),
     )
-    flags = {"admin": args.admin, "blocks": args.blocks}
+    flags = {"admin": args.admin, "blocks": args.blocks, "requires": bool(requires)}
     skipped = {f for flag, files in ONLY_WITH.items() if not flags[flag] for f in files}
 
     created, same, differs = [], [], []
