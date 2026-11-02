@@ -61,6 +61,9 @@ jobs:
         with:
           build-dir: dist/{{slug}}
           exclude-directories: vendor
+          # JCORE plugins aren't on WordPress.org, so a Requires Plugins
+          # dependency on one (e.g. jcore-taika) is never found in its directory.
+          ignore-codes: plugin_header_requires_plugins_not_in_directory
 
   release:
     name: Bump version

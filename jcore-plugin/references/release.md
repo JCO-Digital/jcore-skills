@@ -12,7 +12,7 @@
 
 `.github/workflows/release.yml` (template in `templates/.github/workflows/release.yml`) has three jobs:
 
-1. **check** runs on every PR and every push to `main`. It installs, runs `composer lint`, `pnpm lint:js`, `pnpm lint:css`, `pnpm build` and `pnpm i18n`. It then assembles `dist/<slug>` with `rsync --exclude-from=.distignore --exclude=.distignore` after `composer install --no-dev` (`.distignore` doesn't list itself, and Plugin Check warns about any hidden file), and runs `WordPress/plugin-check-action` on that, excluding `vendor`. Plugin Check needs a valid `readme.txt`.
+1. **check** runs on every PR and every push to `main`. It installs, runs `composer lint`, `pnpm lint:js`, `pnpm lint:css`, `pnpm build` and `pnpm i18n`. It then assembles `dist/<slug>` with `rsync --exclude-from=.distignore --exclude=.distignore` after `composer install --no-dev` (`.distignore` doesn't list itself, and Plugin Check warns about any hidden file), and runs `WordPress/plugin-check-action` on that, excluding `vendor` and ignoring `plugin_header_requires_plugins_not_in_directory` (a `Requires Plugins` dependency on another JCORE plugin is never in the WordPress.org directory). Plugin Check needs a valid `readme.txt`.
 2. **release** runs only on push to `main`, after check. `foonly/foonver` with `command: auto` reads the commits since the last `v*` tag:
    - `BREAKING CHANGE:` or `type!:` → major
    - any `feat` → minor
@@ -76,6 +76,6 @@ Expect the main file, `uninstall.php`, `readme.txt`, `composer.json`, `includes/
 | Release exists, sites don't see it | it's a major bump and sites are waiting for the admin to click "Allow upgrade to vN.x" |
 | Composer-managed sites don't get the release | `dist_deploy` isn't `true` (look for the "Dist deploy disabled" warning), or the dist push step failed |
 | Fatal "Class Jcore\Update\… not found" on a site | a reference to the library that php-scoper couldn't rewrite (string-built class name, file under `build/`) |
-| Plugin Check fails at "Install dependencies" with "`jcore-…`: Plugin not found" | The plugin has `Requires Plugins: jcore-…` but no `.wp-env.json` / `.wp/mu-plugins/jcore-plugin-sources.php`, so the action looked on wordpress.org. Add both from the templates (scaffold with `--diff`). If they are there, the dependency's repo is private or its latest release has no `<slug>.zip` |
+| Plugin Check fails at "Install dependencies" with "`jcore-…`: Plugin not found" | The plugin has `Requires Plugins: jcore-…` but no `.wp-env.override.json` / `.wp/mu-plugins/jcore-plugin-sources.php`, so the action looked on wordpress.org. Add both from the templates (scaffold with `--diff`). If they are there, the dependency's repo is private or its latest release has no `<slug>.zip` |
 | Update popup is empty or says "Plugin not found" | `readme.txt` missing or malformed. The library parses it for the popup |
 | Wrong version in header after release | the main file's version line doesn't match `Version:` / `define( '…_VERSION', 'x' )` form, so version-sync missed it |
