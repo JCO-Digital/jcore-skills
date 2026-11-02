@@ -34,6 +34,12 @@
         "activate": true
       }
     },
+{{#requires}}
+    {
+      "step": "wp-cli",
+      "command": "wp plugin install --activate {{requires_args}}"
+    },
+{{/requires}}
     {
       "step": "activatePlugin",
       "pluginPath": "{{slug}}/{{slug}}.php"

@@ -17,7 +17,7 @@
     "make-pot": "wp i18n make-pot . languages/{{slug}}.pot --domain={{slug}} --slug={{slug}} --exclude=vendor,node_modules,src,release,.wp",
     "make-mo": "wp i18n make-mo languages languages",
     "make-json": "pnpm --package=@wp-blocks/make-pot@1.6.3 dlx makejson build/ languages/",
-    "playground": "wp-playground-cli server --blueprint=.wp/blueprint.json --mount=.:/wordpress/wp-content/plugins/{{slug}} --php=8.2 --port={{port}}"
+    "playground": "wp-playground-cli server --blueprint=.wp/blueprint.json --mount=.:/wordpress/wp-content/plugins/{{slug}} --mount=./.wp/mu-plugins:/wordpress/wp-content/mu-plugins --php=8.2 --port={{port}}"
   },
   "devDependencies": {
     "@wordpress/scripts": "^30.27.0",

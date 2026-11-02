@@ -7,6 +7,9 @@
  * Requires at least: 6.7
  * Tested up to:      {{tested}}
  * Requires PHP:      8.2
+{{#requires}}
+ * Requires Plugins:  {{requires}}
+{{/requires}}
  * Author:            J&Co Digital Oy
  * Author URI:        https://jco.fi
  * License:           GPL-2.0-or-later
