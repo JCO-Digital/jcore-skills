@@ -1,0 +1,26 @@
+{
+  "skill_name": "jcore-timber2",
+  "evals": [
+    {
+      "id": 1,
+      "name": "upgrade-grasshopper-project",
+      "prompt": "Upgrade this project to Timber 2.",
+      "expected_output": "Notices timber2/grasshopper lags grasshopper by 6 commits and that the merge conflicts in includes/timber.php; merges (or asks before pushing) rather than silently regressing the submodule. Sets timber/timber ^2.3 and raises config.platform.php from 8.0 to >=8.1, branch = \"timber2/grasshopper\" in jcore.toml and .gitmodules, moves the submodule. In the bojaco child theme fixes timber_context -> timber/context and TimberImage(...) -> get_image(...) in views/header.twig. Leaves the user's existing uncommitted composer.json/jcore.toml edits intact, runs the scanner and php -l, and reports what was and wasn't verified. Does not push.",
+      "files": ["bojaco @ f9014ef (jcore2 submodule at grasshopper d8d6100)"]
+    },
+    {
+      "id": 2,
+      "name": "no-timber2-branch-yet",
+      "prompt": "Can you move this site to Timber 2? It's on the perch branch of jcore2.",
+      "expected_output": "Finds that no origin/timber2/perch exists, explains that the parent theme must be ported first, proposes creating timber2/perch from perch using the grasshopper/fluffycritter port commits as the template, runs the scanner over jcore2 to scope the work, and asks before creating/pushing the shared branch.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "name": "debug-missing-thumbnails",
+      "prompt": "After switching to the timber2 branch the product teasers and some blog cards have no images and the menu links are empty. No errors in the log.",
+      "expected_output": "Identifies removed Timber 1 getters rendering empty via Core::__get (post.get_thumbnail, item.get_link), finds them with the scanner in the child theme, replaces with post.thumbnail / item.link, and checks get_image() inputs (ACF return format URL vs ID).",
+      "files": []
+    }
+  ]
+}
