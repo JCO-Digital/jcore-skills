@@ -27,7 +27,7 @@ A checklist for bringing a pre-2026 JCORE plugin (old release action, committed 
 
 - `phpcs.xml` → `phpcs.xml.dist` with PHPCompatibilityWP, text domain, prefixes and the `build`/`render.php` exclusions. Add `lint`/`lint:fix` composer scripts, and drop the explicit `squizlabs/php_codesniffer` and `phpcsutils` requires (wpcs pulls them in).
 - `package.json`: `private`, repository fields, `check`/`lint:php`/`i18n`/`playground` scripts, `@wordpress/scripts ^30.27`, the `typescript` pin. Drop `concurrently`/`watch` and the `env:*` scripts.
-- Replace the old wp-env setup with `.wp/blueprint.json` and a `playground` script. Replace the old `.wp-env.json` with the template's, which only maps `.wp/mu-plugins` for Plugin Check, and add `.wp/mu-plugins/jcore-plugin-sources.php` and `/.wp-env.json` in `.distignore`. An old `.wp-env.json` with `plugins` or `config` would be merged into the Plugin Check environment.
+- Replace the old wp-env setup with `.wp/blueprint.json` and a `playground` script. Delete the old `.wp-env.json` and add the template's `.wp-env.override.json` (it only maps `.wp/mu-plugins` for Plugin Check), `.wp/mu-plugins/jcore-plugin-sources.php`, and `/.wp-env.json` and `/.wp-env.override.json` in `.distignore`.
 - `.distignore`, `.editorconfig`, `pnpm-workspace.yaml` and the Makefile from the templates. Keep the plugin's pnpm major unless asked; with pnpm 10, write `onlyBuiltDependencies` instead of `allowBuilds`.
 - Fix `composer.json` metadata. Old ones often say "JCORE Global Content plugin" for every plugin and `GPL-2.0-only` against a `GPL-2.0-or-later` header.
 - Regenerate both lockfiles: `composer update`, then `pnpm install` (interactive prompts can be skipped with `CI=true pnpm install --no-frozen-lockfile`).

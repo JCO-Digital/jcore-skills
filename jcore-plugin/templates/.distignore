@@ -15,6 +15,7 @@
 /.vscode/
 /.wp/
 /.wp-env.json
+/.wp-env.override.json
 /.foonver.toml
 /Makefile
 /phpcs.xml.dist

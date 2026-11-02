@@ -8,8 +8,8 @@
  * publishes `<slug>.zip` on its GitHub releases in JCO-Digital/<slug>, so
  * this answers plugins_api() for jcore-* slugs with the latest release.
  *
- * Development and CI only: mapped in by .wp-env.json (Plugin Check) and the
- * playground script, never shipped (/.wp/ is in .distignore). The
+ * Development and CI only: mapped in by .wp-env.override.json (Plugin Check)
+ * and the playground script, never shipped (/.wp/ is in .distignore). The
  * repositories must be public for the download to work.
  *
  * @package Jcore\{{ns}}
