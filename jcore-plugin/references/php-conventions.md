@@ -13,6 +13,7 @@ How code inside a JCORE plugin is organised, with the reasoning. The templates i
 - Post types, taxonomies and meta
 - Translations
 - Uninstall
+- Taika add-ons
 - Security checklist
 
 ## Naming
@@ -107,6 +108,18 @@ Only add tables when options, post meta or a custom post type really won't do. W
 ## Uninstall
 
 `uninstall.php` runs without the plugin loaded, so it spells out every name instead of using class constants. It starts with `defined( 'WP_UNINSTALL_PLUGIN' ) || exit;` and wraps the work in `jcore_<word>_uninstall_site()`. On multisite it loops `get_sites( array( 'fields' => 'ids', 'number' => 0 ) )` with `switch_to_blog()`. When you add an option, transient, table, cron event or meta key, add it here in the same change.
+
+## Taika add-ons
+
+Plugins scaffolded with `--taika` add tools to the bojaco MCP gateway. jcore-taika's README is the reference; jcore-taika-acf is the worked example.
+
+- Register every ability through the registrar in `Abilities::register()`: `$module->ability( $name, $args, Registrar::READ|WRITE|DESTRUCTIVE, $schema, $tool )`. Never call `wp_register_ability()` directly. The registrar is what keeps abilities away from the MCP Adapter and reports them on `/status`.
+- `$tool` is what the gateway offers. `name` is the MCP tool name, lowercase with underscores and unique across all Taika modules. `description` is written for the model, naming tools (`update_post`) rather than abilities, and untranslated. Without `$tool` the ability is registered but offered to no gateway client.
+- Input schemas use `Schema::object()` and `Schema::id()` from core. A field added after schema 1 gets `Registrar::SINCE_KEYWORD => <schema>` (`x-taika-since`), and the ability's schema number goes up to match. An enum whose values differ per site gets `Registrar::SITE_ENUM_KEYWORD => true`. Never rename or remove a field or tool; a breaking change gets a new name.
+- Writes follow core: `Write_Guard::check_lock()`, a version token checked with `hash_equals()`, and `Write_Guard::mark( $post_id )`.
+- Check locally with `wp jcore-taika manifest <slug>` in Playground. It prints what the gateway will read from the release.
+- Abilities that need another plugin (ACF, WooCommerce) register only while it is active. The module itself always registers, so `/status` shows the add-on is installed. List that plugin in `--taika-wp-plugins` (the job's `wp_plugins`), or the release's manifest comes out empty.
+- New add-on tools start off on every site; staff turn them on per site in the gateway. The plugin repo needs the `TAIKA_CATALOG_TOKEN` secret (often an org secret) for the release to ping the gateway. Without it the gateway picks the release up within a day. A private repository is read through the gateway's GitHub App, which must be installed on it.
 
 ## Security checklist
 
