@@ -30,12 +30,14 @@ The scaffold script renders the current templates (the Turva config files, gener
 
 ```bash
 python3 ~/.claude/skills/jcore-plugin/scripts/scaffold.py <target-dir> \
-  --name "JCORE Example" --description "One sentence." [--admin] [--blocks] [--requires jcore-taika]
+  --name "JCORE Example" --description "One sentence." [--admin] [--blocks] [--requires jcore-taika] \
+  [--taika [--taika-wp-plugins advanced-custom-fields]]
 ```
 
 - The slug comes from the directory name and must be `jcore-<word>`. Namespace (`Jcore\Example`), constant prefix (`JCORE_EXAMPLE`), function prefix (`jcore_example`), text domain and REST namespace (`jcore-example/v1`) are all derived from it — keep them consistent everywhere, because PHPCS checks the prefixes and text domain.
 - `--admin` adds a settings page that hosts a React app, a REST controller base and the `src/admin/` entry. `--blocks` adds block registration from `build/blocks-manifest.php`; create blocks under `src/<block>/` (the `wp-block-development` skill covers block.json itself).
 - `--requires <slug>` (repeatable) is for add-ons such as `jcore-taika-acf`. It writes `Requires Plugins: <slug>` in the header and adds a Playground step that installs the dependency. Neither wordpress.org nor Plugin Check knows the JCORE plugins, so every plugin carries `.wp/mu-plugins/jcore-plugin-sources.php`: a dev-only mu-plugin that answers WordPress's `plugins_api()` for `jcore-*` slugs with the plugin's latest GitHub release. `.wp-env.override.json` maps it in for the Plugin Check action, and the `playground` script mounts it. That lets `wp plugin install jcore-taika`, which the Plugin Check action runs for `Requires Plugins`, download the real release zip. The dependency's repository must be public. Details: `references/tooling.md`.
+- `--taika` is for Taika add-ons, the plugins that give the bojaco MCP gateway new tools. It adds `includes/class-abilities.php`, which registers a module on `jcore_taika_register` (hooked in `Plugin::boot()`), plus `Requires Plugins: jcore-taika`, and a `manifest` job in `release.yml`. That job calls jcore-taika's shared `taika-manifest.yml` to attach `taika-tools.json` to each release, which is where the gateway reads the plugin's tools. `--taika-wp-plugins <slug>` names WordPress.org plugins the abilities need active to register, such as `advanced-custom-fields`. Abilities, tool metadata and the schema keywords: `references/php-conventions.md` → Taika add-ons.
 - Existing files are never overwritten. Add `--diff` to print what would change instead of writing.
 
 With `--blocks`, the build fails until `src/` has at least one block: `cd src && npx @wordpress/create-block@latest <block> --no-plugin --variant dynamic --namespace jco --textdomain <slug>`, then `pnpm format`. Its `render.php` also needs the small PHPCS fixes in `references/php-conventions.md` → Blocks.

@@ -2,7 +2,7 @@
 """Render the jcore plugin templates into a plugin directory.
 
 New plugin:   scaffold.py ../jcore-example --name "JCORE Example" --description "…" [--admin] [--blocks]
-Add-on:       scaffold.py ../jcore-taika-acf --name "JCORE Taika ACF" --description "…" --requires jcore-taika
+Taika add-on: scaffold.py ../jcore-taika-acf --name "JCORE Taika ACF" --description "…" --taika [--taika-wp-plugins advanced-custom-fields]
 Migration:    scaffold.py . --name "JCORE Portti" --description "…" --blocks --diff
 
 Existing files are never overwritten. With --diff nothing is written; each
@@ -21,6 +21,9 @@ TEMPLATES = Path(__file__).resolve().parent.parent / "templates"
 
 # Files that only exist for one variant. Everything else is always rendered.
 ONLY_WITH = {
+    "taika": [
+        "includes/class-abilities.php",
+    ],
     "admin": [
         "includes/admin/class-menu.php",
         "includes/rest/class-controller.php",
@@ -81,6 +84,19 @@ def main() -> int:
         help="Plugin this one depends on (Requires Plugins header); repeatable. jcore-* slugs install from their "
         "GitHub releases in Playground and Plugin Check, others from wordpress.org.",
     )
+    parser.add_argument(
+        "--taika",
+        action="store_true",
+        help="Taika module: an Abilities class on jcore_taika_register and the release job that publishes "
+        "taika-tools.json. Adds Requires Plugins: jcore-taika unless this is jcore-taika itself.",
+    )
+    parser.add_argument(
+        "--taika-wp-plugins",
+        action="append",
+        default=[],
+        metavar="SLUG",
+        help="With --taika: WordPress.org plugins the abilities need active to register (e.g. advanced-custom-fields).",
+    )
     parser.add_argument("--tested", default="7.1", help='"Tested up to" WordPress version (default 7.1).')
     parser.add_argument("--port", help="Playground port (default: derived from the slug).")
     parser.add_argument("--diff", action="store_true", help="Show differences against existing files; write nothing.")
@@ -93,6 +109,12 @@ def main() -> int:
         return 2
 
     requires = [r.strip() for item in args.requires for r in item.split(",") if r.strip()]
+    if args.taika and slug != "jcore-taika" and "jcore-taika" not in requires:
+        requires.insert(0, "jcore-taika")
+    if args.taika_wp_plugins and not args.taika:
+        print("error: --taika-wp-plugins needs --taika", file=sys.stderr)
+        return 2
+    taika_wp_plugins = [p.strip() for item in args.taika_wp_plugins for p in item.split(",") if p.strip()]
     bad = [r for r in requires if not re.match(r"^[a-z0-9]+(?:-[a-z0-9]+)*$", r)]
     if bad:
         print(f"error: not plugin slugs: {', '.join(bad)}", file=sys.stderr)
@@ -107,8 +129,9 @@ def main() -> int:
         landing=f"/wp-admin/options-general.php?page={slug}" if args.admin else "/wp-admin/plugins.php",
         requires=", ".join(requires),
         requires_args=" ".join(requires),
+        taika_wp_plugins=" ".join(taika_wp_plugins),
     )
-    flags = {"admin": args.admin, "blocks": args.blocks, "requires": bool(requires)}
+    flags = {"admin": args.admin, "blocks": args.blocks, "requires": bool(requires), "taika": args.taika}
     skipped = {f for flag, files in ONLY_WITH.items() if not flags[flag] for f in files}
 
     created, same, differs = [], [], []

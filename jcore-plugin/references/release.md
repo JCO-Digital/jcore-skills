@@ -45,7 +45,7 @@ Read `jcore-update/.github/workflows/reusable-plugin-publish.yml` for the source
 
 The user (not you) has to:
 
-- Create `JCO-Digital/<slug>` on GitHub and add the secrets `UPDATE_API_KEY`, `DIST_REPO_SSH_KEY` and `SLACK_BOT_TOKEN`. Org-level secrets may already cover these, so ask.
+- Create `JCO-Digital/<slug>` on GitHub and add the secrets `UPDATE_API_KEY`, `DIST_REPO_SSH_KEY` and `SLACK_BOT_TOKEN`. Org-level secrets may already cover these, so ask. A Taika add-on (`--taika`) also wants `TAIKA_CATALOG_TOKEN`, and if the repo is private, the gateway's GitHub App installed on it.
 - Register the slug with update.jcore.fi. Without it the first release fails at "Publish to Update API". Use `jcore-register-plugin` from the [update-api releases](https://github.com/JCO-Digital/update-api/releases) (or `go run ./cmd/jcore-register-plugin` in an update-api checkout). The admin key is in Bitwarden. It's the same value as the `UPDATE_API_KEY` repo secret, which GitHub can't show. Ask the user to put it in `UPDATE_API_KEY` or in a file named by `UPDATE_API_KEY_FILE` (mode 600); never take it as a command-line argument or print it. Then run `jcore-register-plugin --dry-run <plugin-dir>` and then without `--dry-run`. It reads the slug and name from the plugin, leaves an already-registered slug alone, and lists the remaining setup. You may run the dry run; the real run writes to production, so leave it to the user unless they ask.
 - Only if sites install the plugin through Composer: create the dist repo `git@git.jcore.fi:/srv/git/<slug>.git` and set `dist_deploy: true` in `release.yml`. The template leaves it `false`.
 - Protect `main` so foonver's push works (it pushes with the workflow token, so the branch rules must allow it).
@@ -77,5 +77,6 @@ Expect the main file, `uninstall.php`, `readme.txt`, `composer.json`, `includes/
 | Composer-managed sites don't get the release | `dist_deploy` isn't `true` (look for the "Dist deploy disabled" warning), or the dist push step failed |
 | Fatal "Class Jcore\Update\… not found" on a site | a reference to the library that php-scoper couldn't rewrite (string-built class name, file under `build/`) |
 | Plugin Check fails at "Install dependencies" with "`jcore-…`: Plugin not found" | The plugin has `Requires Plugins: jcore-…` but no `.wp-env.override.json` / `.wp/mu-plugins/jcore-plugin-sources.php`, so the action looked on wordpress.org. Add both from the templates (scaffold with `--diff`). If they are there, the dependency's repo is private or its latest release has no `<slug>.zip` |
+| Release has no `taika-tools.json` (Taika add-ons) | The `manifest` job failed or was skipped. "No Taika module named …": the add-on didn't activate in Playground (its `Requires Plugins`, or jcore-taika's latest release is older than 0.6.0). An empty `tools` warning: a plugin the abilities need isn't in `wp_plugins` |
 | Update popup is empty or says "Plugin not found" | `readme.txt` missing or malformed. The library parses it for the popup |
 | Wrong version in header after release | the main file's version line doesn't match `Version:` / `define( '…_VERSION', 'x' )` form, so version-sync missed it |

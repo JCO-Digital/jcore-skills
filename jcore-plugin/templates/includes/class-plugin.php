@@ -48,6 +48,11 @@ final class Plugin {
 		$this->register_updater();
 
 		add_action( 'init', array( $this, 'load_textdomain' ) );
+{{#taika}}
+
+		// Runs only while jcore-taika is active: it fires the action.
+		add_action( 'jcore_taika_register', array( Abilities::class, 'register' ) );
+{{/taika}}
 {{#blocks}}
 		add_action( 'init', array( $this, 'register_blocks' ) );
 		add_action( 'init', array( $this, 'set_block_script_translations' ), 20 );
