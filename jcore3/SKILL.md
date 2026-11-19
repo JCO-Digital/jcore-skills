@@ -237,10 +237,13 @@ editor still adds a 24px gap above each block and none below, overriding
 theme.json's heading and paragraph margins. Restate those margins in
 `editor.scss` under `:is(.is-layout-constrained, .is-layout-flow) > …`.
 
-**Ydin hides some core blocks** (`jcore_restricted_blocks`): quote, columns,
-column, media & text, query, navigation and others; columns come from
-Ruudukko. Don't style or use a hidden block without asking; to allow one,
-remove it through that filter in `includes/setup.php`.
+**Ydin hides some core blocks** (`jcore_restricted_blocks`): quote, media &
+text, query, navigation and others. Ilme changes the list in
+`includes/gutenberg.php`: it hides **details** as well (accordions are Lohko's
+`lohko/accordions`) and takes **columns** back off it, so editors have core
+columns, but column layouts in patterns and the style guide are Ruudukko grids
+(`jcore/grid`). Don't style or use a hidden block without asking; to allow
+one, remove it through that filter in `includes/gutenberg.php`.
 
 Every project goes through all the base blocks and styles each to the design;
 blocks the design doesn't cover are planned with the user, not invented. See

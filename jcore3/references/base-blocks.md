@@ -13,10 +13,13 @@ List what the theme styles now:
 - `styles.elements` and `styles.blocks` in theme.json.
 - Block styles registered in `includes/gutenberg.php`.
 
-The base set, from Ilme: paragraph and headings (typography), lists, quote and
-pullquote, buttons, image and gallery, cover, group, columns, media & text,
-separator, spacer, table, details, file, search, embeds, RSS, Yoast
-breadcrumbs. Add any other core block the content will use.
+The base set, from Ilme: paragraph and headings (typography), lists,
+pullquote, buttons, image and gallery, cover, group, separator, spacer, table,
+file, search, embeds, RSS, Yoast breadcrumbs. Add any other core block the
+content will use. Not in the set: quote (Ydin hides it), details (Ilme hides
+it: accordions are Lohko's `lohko/accordions`), and columns, which stay
+available in the editor but aren't styled or shown: column layouts are
+Ruudukko grids (`jcore/grid`).
 
 ## Style guide page (always)
 
@@ -26,9 +29,34 @@ once, on every site, and after every change. Build it first and keep it up to
 date as blocks and styles are added.
 
 - It's a theme pattern, `patterns/style-guide.php` (slug `jcore/style-guide`,
-  title "Style guide"), so it's versioned and deployed with the theme. Images
-  come from the theme (`get_theme_file_uri( 'assets/images/…' )`), so the
-  pattern works on any site without media.
+  title "Tyyliopas"), so it's versioned and deployed with the theme. Images
+  come from the theme (`get_theme_file_uri( 'assets/images/placeholder.jpg' )`),
+  so the pattern works on any site without media.
+- **Ilme ships it** (from the `irishcoffee` branch on): don't build it from
+  scratch, start from Ilme's pattern and apply it to the project:
+  - **Colours and font sizes need no edits:** the pattern reads the palette
+    and the font size presets from theme.json
+    (`wp_get_global_settings()`) when it loads, so the swatches and size
+    samples follow the project's tokens as soon as theme.json has them.
+  - **Labels and swatches** are styled in `partials/_style-guide.scss`
+    (section labels in the body font, swatches as a grid); it's `@use`d in
+    both `theme.scss` and `editor.scss`. Restyle the labels only if they
+    clash with the design.
+  - **Add the project's own block styles** to their section as they are
+    registered in `includes/gutenberg.php` (e.g. a group "Box" style, a list
+    "Dots" style, a light button), and the project's Lohko blocks with their
+    styles.
+  - **Remove** sections for blocks the project hides or doesn't use, and keep
+    the sample texts' length close to the real content's.
+  - **Replace** `assets/images/placeholder.jpg` with a photo in the design's
+    proportions if the cropping matters (cover, gallery).
+  - What Ilme's pattern shows: colours, font sizes, headings H1–H6, text
+    (ingress, body text with link, bold and italic, `mini`), buttons (fill,
+    outline, also on dark), lists, pullquote, tables (regular, stripes),
+    file, separators (default, wide, dots), images (default, rounded
+    corners, rounded), gallery (default, rounded corners), cover, group with
+    a background, Ruudukko grids, spacers (sm–xl) and Lohko accordions
+    (default, compact).
 - Create the page from the pattern: a page "Tyyliopas" / "Style guide" (slug
   `tyyliopas` or `style-guide`) whose content is the pattern's content,
   e.g. with WP-CLI `wp eval` reading
@@ -66,7 +94,8 @@ date as blocks and styles are added.
     image style, a gallery with captions, cover,
     video embed.
   - **Groups and columns:** every group style, a Ruudukko grid (`jcore/grid`
-    with `jcore/column`s; core columns are hidden by Ydin).
+    with `jcore/column`s). Core columns stay available in the editor but are
+    not shown: column layouts are built with Ruudukko.
   - **Responsive spacers:** each of Ydin's spacer styles (`is-style-sm`,
     `-md`, `-lg`, `-xl`, from `jcore_spacer_styles`) labelled, inside a
     `style-guide-spacers` group that gives them a sand background (in
@@ -80,8 +109,9 @@ date as blocks and styles are added.
   - **Post lifts:** `jcore/latest-posts` with a few posts (one without a
     featured image), on the background the site lists them on; the same
     for every post type with its own card (`tease-<post_type>.twig`).
-  - **Accordions:** core details and Lohko's accordion, which share the look,
-    and every block style of the Lohko accordion.
+  - **Accordions:** Lohko's accordion with every block style (default,
+    compact). Core details is hidden in Ilme
+    (`jcore_restricted_blocks` in `includes/gutenberg.php`).
   - **File, search, RSS.**
   - Any project block style registered in `includes/gutenberg.php`.
 - When a block or style is added to the theme, add it to the pattern and
