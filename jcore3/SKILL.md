@@ -312,7 +312,10 @@ preset or `currentcolor` and can change on hover:
 ```
 
 The path is relative to the built CSS in `dist/css`. Use `background` or
-`content: url()` only for multicolour images (patterns, quote marks).
+`content: url()` only for multicolour images (patterns). Quote marks are
+text, not images: the pullquote's mark is a quotation mark in the project's
+heading font (`references/base-blocks.md`, "Default: the pullquote's
+quotation mark").
 
 ### Image hover zoom
 

@@ -133,6 +133,38 @@ SKILL.md ("Where styling lives", "Block styles", "Icons in CSS"):
 - Replace what's left over from Ilme: hard-coded hex or `rgb()` colours,
   Ilme's icons, radii and sizes that aren't the design's.
 
+### Default: the pullquote's quotation mark
+
+Always, unless the design draws its own quote mark: the pullquote's mark is
+a **quotation mark in the project's heading font**, not an image, so it
+matches the headings and takes a preset colour. Ilme already does this
+(`_pullquote.scss`); keep it and fit it to the project:
+
+```scss
+&:first-of-type::before {
+	content: "\201D"; // ” (use "\201C" “ if the language or design wants it)
+	position: absolute;
+	top: var(--wp--custom--pullquote--mark-offset, -0.05em);
+	left: -4.5rem;
+	font-family: var(--jcore-heading-font-family);
+	font-size: 6rem; // large: the glyph sits high in its line box
+	font-weight: 600;
+	line-height: 1;
+	color: var(--wp--preset--color--brand);
+}
+```
+
+- The vertical offset depends on the font: theme.json
+  `settings.custom.pullquote.markOffset` (Ilme: Playfair Display
+  `-0.081em`). After changing the heading font, line the mark's ink top up
+  with the quote's capitals in a screenshot and set the offset; measured
+  values so far: Playfair Display -0.081em, Montserrat 0em, Rethink Sans
+  -0.05em, Figtree -0.077em.
+- Colour: the preset the design uses for accents (`brand` by default).
+- With per-site heading fonts (multisite), each site sets its own offset in
+  `sites/<key>.json` and the mark follows the site's font automatically.
+  Check it in the style guide on every site.
+
 ## 3. Blocks the design doesn't cover: ask
 
 When a block isn't in the design, or the theme has no styles for it, **don't

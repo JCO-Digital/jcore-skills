@@ -60,10 +60,11 @@ wp --require=/tmp/yoast-local.php yoast index --reindex --skip-confirmation
 
 ## Gotchas
 
-- **Ilme pads and spaces every group** (`styles.blocks.core/group`: padding
-  and margin on all sides). Inside heroes and other tight layouts, reset
-  `padding` and `margin-block` on the inner groups, and on the main group
-  where a full-bleed hero must touch the top.
+- **Ilme pads every group** (`styles.blocks.core/group`: padding on all
+  sides, no margin since `irishcoffee`). Inside heroes and other tight
+  layouts, reset `padding` on the inner groups. An older Ilme also gave
+  groups a top and bottom margin: if the project's theme.json still has it,
+  reset `margin-block` where a full-bleed hero must touch the top.
 - **Overlay header and the admin bar.** WordPress moves the whole page down
   for the admin bar (`html { margin-top }`), so an absolutely positioned
   overlay header needs `top: 0`; adding the admin bar height doubles the
