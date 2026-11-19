@@ -10,6 +10,7 @@ These skills teach AI coding assistants (Zed, Claude Code, Cursor, Copilot, Code
 | ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **[`jcore-plugin`](./jcore-plugin)** | Conventions, architecture, scaffolding, migration, and release pipeline for J&Co Digital's `jcore-*` WordPress plugins (`jcore-turva`, `jcore-maailma`, `jcore-portti`, and siblings). |
 | **[`jcore-timber2`](./jcore-timber2)** | Upgrading a JCORE site project (jcore2 parent theme + child theme) from Timber 1.x to 2.x: the `timber2/<branch>` jcore2 branches, Composer/PHP changes, porting the child theme, and a Timber 1 pattern scanner (`scripts/scan-timber1.sh`). |
+| **[`jcore3`](./jcore3)** | Building a JCORE3 WordPress site (Ilme base theme, jcore/ydin, Lohko and Ruudukko blocks): reading the technical plan, Figma design tokens into theme.json, base block styles, templates and patterns, post types, footer, multisite, and deployment. |
 
 ---
 
