@@ -124,8 +124,10 @@ JSON from hand edits of a large file.
   `google/fonts` GitHub repo (`ofl/<family>/<Family>[wght].ttf` and the Italic file).
 - One family entry per design typeface, slug = kebab-case family name
   (`inter`, `playfair-display`). Declare the weight range the file supports.
-- Ilme's fonts the design doesn't use (e.g. Montserrat) can be removed, with their
-  files (`git rm`).
+- Ilme ships Playfair Display (headings) and Inter (body and buttons), both
+  variable with real italic files. Fonts the design doesn't use can be
+  removed, with their files (`git rm`). After changing the heading font,
+  set the pullquote's mark offset (`references/base-blocks.md`).
 - Update `src/scss/partials/_typography.scss`:
   `--jcore-font-family` (body) and `--jcore-heading-font-family` (headings).
 
@@ -237,8 +239,9 @@ How the two work together (e.g. `contentSize` 872px, `wideSize`
 ### Lists and tables
 
 Ilme styles them in `src/scss/blocks/_lists.scss` (bullets, numbers, and an
-`.arrow-list` variant using a Font Awesome arrow) and `_table.scss`, plus a
-`core/table` `css` string in theme.json. Use the stylesheet page's bullet, number
+`.arrow-list` variant with `assets/images/arrow-long.svg` as a mask) and
+`_table.scss` (a faint line between rows, the header row on `light` in small
+capitals, Stripes white and `light`). Use the stylesheet page's bullet, number
 and table designs when filled in. Otherwise:
 
 - Lists: look for a list in the page designs (service lists, link lists with

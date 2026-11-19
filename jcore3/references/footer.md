@@ -22,11 +22,16 @@ project: `chefsdagarna`.
   `footer_right` menu. `lohko/footer` prints an area's menu itself. To show a
   menu anywhere else (inside a global content post, a template part), use
   **`lohko/simple-menu`** with its menu location setting.
-- **The logo goes straight into the template**, not into global content. In
-  chefsdagarna `lohko/footer` got `logo` and `logoAlt` settings: a path to an
-  image in the theme (e.g. `assets/images/footer-logo.png`) or a full URL,
-  shown at the top of the left area and linked to the front page. Copy that
-  change from chefsdagarna's Lohko if the project's copy doesn't have it.
+- **The logo goes straight into the template**, not into global content.
+  `lohko/footer` has `logo` and `logoAlt` settings: a path to an image in
+  the theme (e.g. `assets/images/footer-logo.svg`) or a full URL, shown at
+  the top of the left area and linked to the front page. An SVG in the
+  theme is inlined, so `fill="currentColor"` follows the footer's text
+  colour. **Left empty, the footer shows the site logo** (Customizer → Site
+  Identity, without WordPress's own link around it), so set `logo` when the
+  footer needs a light version on a dark background. A project whose Lohko
+  copy is older than this may lack the settings: copy `src/footer/` from
+  master Lohko.
 
 ## Template part
 

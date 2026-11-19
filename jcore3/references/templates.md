@@ -19,6 +19,12 @@ Block templates live in `templates/`, template parts in `parts/`, patterns in
   dark heroes.
 - Header and footer parts are placed with `"tagName":"div"`
   (see `footer.md`), so the page has one `<header>` and one `<footer>`.
+- **Widths come from the parts**, not from Lohko: in `parts/header.html`
+  the nav header has `"layout":{"type":"constrained"}` and the navigation
+  (and a sliding menu) `"align":"wide"`; in `parts/footer.html` the footer
+  is `"align":"wide"`. A narrow site leaves the `align` out. Lohko removes
+  the top margin of the block after an overlay header, so a hero under it
+  starts at the top.
 
 ## Article lists in templates
 

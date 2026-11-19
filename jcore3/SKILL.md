@@ -75,8 +75,10 @@ so it's project code: **a Lohko block's whole look goes in the block itself**
 (`partials/_footer.scss`, `partials/_navigation.scss`). In the block's SCSS:
 
 - Use the theme.json presets with a fallback
-  (`var(--wp--preset--color--secondary, #036)`), so the block still looks
-  right where a preset is missing.
+  (`var(--wp--preset--color--brand, currentcolor)`), so the block still looks
+  right where a preset is missing. Lines and icons that should follow the
+  text take `currentcolor` (`color-mix(in srgb, currentcolor 15%,
+  transparent)` for a faint line).
 - Media queries with the `@jcodigital/jcore-media` mixins: `@use "media";`
   (Lohko's webpack config aliases it) and
   `@include media.breakpoint(lg) { … }` (xs 0, sm 360, md 768, lg 992,
@@ -93,6 +95,24 @@ so it's project code: **a Lohko block's whole look goes in the block itself**
   styling.
 - The block's `style.scss` loads in the editor too, so nothing extra is needed
   in the theme's `editor.scss`.
+
+**What master Lohko already has** (check before building a new block; the
+project's copy is a snapshot of it):
+
+- `lohko/accordions` + `lohko/accordion-item`: "First item open", "FAQ
+  schema" (FAQPage, into Yoast's graph when Yoast is active, so FAQs are
+  this block, not Yoast's FAQ block), Default and Compact styles, the
+  address shows the open item.
+- `lohko/nav-header`: Sticky, Scroll classes and "Overlay content" (header
+  over a hero; Lohko removes the top margin of the block after it).
+- `lohko/navigation` (with logo, search, hamburger that turns into an X),
+  `lohko/sliding-menu` (off-canvas drill-down menu), `lohko/simple-menu`,
+  `lohko/header`.
+- `lohko/footer` with a logo setting (see `references/footer.md`).
+- `lohko/logocloud`, `lohko/copyright-date`, `lohko/rive-animation`.
+
+Widths are not set in Lohko: the template parts set them (`align`, and
+`layout` on the nav header); see `references/templates.md`.
 
 **Blocks that repeat the menu's content** (e.g. a services block showing the
 mega menu's categories) read the same menu through Lohko's
@@ -180,10 +200,10 @@ custom post type (references, people, …), each in its own
   Query Loop and their own card markup; replace it with
   `jcore/dynamic-archive` (e.g. `{"postType":"post","columns":3,
   "perPage":9,"showPagination":true,"infiniteScroll":false,"align":"wide"}`)
-  so lists use the theme's tease. Ilme's pagination styles in
-  `_archive.scss` use Font Awesome icons the theme doesn't load; restyle the
-  pagination from the design (nav classes `is-first-page` / `is-last-page`
-  tell which arrow to hide). Test it by setting `perPage` low for a moment.
+  so lists use the theme's tease. Ilme's pagination in `_archive.scss` has
+  chevron icons as SVG masks (`assets/images/chevron.svg`, `chevrons.svg`,
+  turned for previous and first); restyle it from the design (nav classes
+  `is-first-page` / `is-last-page` tell which arrow to hide). Test it by setting `perPage` low for a moment.
 
 **Logo.** For a logo that follows the header's text colour, use an SVG with
 `fill="currentColor"` as the custom logo and turn on Ydin's inline SVG logo
