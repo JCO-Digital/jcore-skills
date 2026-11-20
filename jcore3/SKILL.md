@@ -114,6 +114,33 @@ project's copy is a snapshot of it):
 Widths are not set in Lohko: the template parts set them (`align`, and
 `layout` on the nav header); see `references/templates.md`.
 
+**Sticky nav header: grey gap above it, or it doesn't stick.** Lohko's
+Sticky option writes `data-jsticky`, and Lohko makes the header stick with
+CSS (`position: sticky`). The theme's JS (`@jcodigital/jcore-utils`, imported
+in `src/js/jcore.ts`, the old jutils sticky code) also picks up every
+`[data-jsticky]` and inserts an empty `<div id="spacer_0">` of the header's
+height before it, which only makes sense for headers that turn
+`position: fixed`. With a CSS-sticky header that's an 80px strip of page
+background above the header. And `position: sticky` only sticks inside the
+parent, which in a template part is a wrapper div as tall as the header, so
+the header doesn't stick at all. The fix lives in Lohko, not the theme:
+
+- `save.js` writes `data-jsticky-no-spacer="true"` with `data-jsticky`
+  (jcore-utils then sets no spacer height), with a `deprecated.js` holding
+  the old save so headers saved without it stay valid. Update the header
+  part's markup to match: `<header … data-jsticky="true"
+  data-jsticky-no-spacer="true">`.
+- `style.scss` lets the template part's wrapper drop out so the header sticks
+  against the page:
+  `.wp-site-blocks > :has(> .wp-block-lohko-nav-header:is([data-jsticky], .sticky):not(.is-overlay)) { display: contents; }`
+
+Fixed in the `signwell-new` project copy (commit "fix(nav-header): no
+jcore-utils spacer…"); check that a project's Lohko has it, and take it to
+master Lohko. Don't hide `#spacer_0` in theme CSS the way older projects did
+(jco-web, otava, eg-trading): that leaves the header not sticking. Check
+with the page scrolled: the header's top stays at 0 and `#spacer_0` is 0px
+tall.
+
 **Blocks that repeat the menu's content** (e.g. a services block showing the
 mega menu's categories) read the same menu through Lohko's
 `includes/menu.php` (`mega_categories()`, `mega_category_links()`), so the
