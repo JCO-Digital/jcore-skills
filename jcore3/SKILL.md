@@ -104,7 +104,8 @@ project's copy is a snapshot of it):
   this block, not Yoast's FAQ block), Default and Compact styles, the
   address shows the open item.
 - `lohko/nav-header`: Sticky, Scroll classes and "Overlay content" (header
-  over a hero; Lohko removes the top margin of the block after it).
+  over a hero; Lohko removes the top margin of the block after it). Ilme's
+  "Page (overlay header)" template uses it; see `references/templates.md`.
 - `lohko/navigation` (with logo, search, hamburger that turns into an X),
   `lohko/sliding-menu` (off-canvas drill-down menu), `lohko/simple-menu`,
   `lohko/header`.
