@@ -232,6 +232,10 @@ How the two work together (e.g. `contentSize` 872px, `wideSize`
   `contentSize` when the widths come from the design: (1324 − 2 × 32) / 3 × 2
   + 32 = 872px. A larger gap (e.g. `spacing-sizes--xlarge`) narrows it a
   little toward the design's sidebar width.
+- The gap between Ruudukko columns is `settings.custom.ruudukko.gap`
+  (Ilme: `fluid-medium`, 1–2rem). Ruudukko's own CSS has no gap; Ilme's
+  `src/scss/blocks/_ruudukko.scss` applies the variable on the front end and
+  in the editor. Set the design's column gap there, not on each grid.
 - Blocks with their own two-column layout (e.g. a services tab panel) should
   choose their layout by their own width (a container query), not the
   screen's, so they work both at `wideSize` and at `contentSize`.

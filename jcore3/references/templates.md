@@ -17,6 +17,14 @@ Block templates live in `templates/`, template parts in `parts/`, patterns in
   under it (`lohko/nav-header` `overlay`). Every hero then leaves room for
   the header itself. A `header-dark` part (light text) is used over photo and
   dark heroes.
+- **Ilme ships "Page (overlay header)"** (`templates/page-overlay.html`):
+  the `header-overlay` part (nav header with Overlay on, transparent, white
+  links), a dimmed cover with the featured image and the page title, the
+  content and the footer. The customer only picks the template on a page;
+  the shared Header part stays as it is. Ilme's `_navigation.scss` pads the
+  cover after an overlay header so its content clears the header (80px +
+  `spacing-sizes--medium`). Build the project's overlay heroes from it:
+  match the part's colours and the cover (dim, height) to the design.
 - Header and footer parts are placed with `"tagName":"div"`
   (see `footer.md`), so the page has one `<header>` and one `<footer>`.
 - **Widths come from the parts**, not from Lohko: in `parts/header.html`
