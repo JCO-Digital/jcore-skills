@@ -185,6 +185,41 @@ way `lohko/accordions` holds `lohko/accordion-item`s). Deep patterns break
 easily in the editor, and the customer can't edit them sensibly. A pattern is
 fine for a flat part, e.g. a cover with a heading and buttons.
 
+**Styling the editor can break: always a Lohko block.** Depth isn't the only
+test. When the look depends on blocks staying in a set arrangement that a
+user can easily break in normal Gutenberg (a card whose button is styled
+into a bar along its bottom, a fixed order of icon, title, text and link),
+build it as a Lohko block, or a block pair when a container splits the area
+into columns: the container holds the grid, each item is its own block with
+its fields (attributes, RichText, a media picker), so the editor edits
+content, not structure. Don't fake it with block styles on Ruudukko columns.
+
+- **Name pairs `<name>-container` and `<name>-item`**: `lohko/card-container`
+  + `lohko/card-item` (the item has `"parent": ["lohko/<name>-container"]`).
+  `lohko/accordions` + `lohko/accordion-item` predate this rule; don't copy
+  that naming.
+- The container can save its markup (`useInnerBlocksProps.save`, a
+  `columns-N` class); items that show an image or a link render on the
+  server (`render.php` + `view.twig`), so changes to the markup don't
+  invalidate saved blocks.
+- An item that stores an image or post ID goes in `silta_block_references()`
+  (`'imageId' => 'post'`, also for media).
+- Reference: `signwell-new`'s `lohko/card-container` / `lohko/card-item`
+  (icon, title, text, link bar; the whole card is the link) and
+  `lohko/share` (share links built on the server from the shown post,
+  WordPress's own social icons via `block_core_social_link_get_icon()`).
+
+**Editable text around a template goes in Global Content.** A template is
+not content, so text in it (or in a theme pattern placed in it) can only be
+changed by a developer. Text the customer may want to edit above or below an
+archive (an intro, a testimonial, a call to action) is a Global Content post
+(jcore-maailma) placed in the template with
+`<!-- wp:jco/global-content {"selectedSlug":"<slug>"} /-->`. The slug follows
+the post's title (Maailma renames it on save), so title the post with the
+slug, e.g. `products-testimonial`, and create it with the site's content.
+Only text that is the same on every site and needs translating stays a
+theme pattern with `__()` strings.
+
 **Articles and post lifts.** Article lists use the **jcore-dynamic-archive**
 plugin and its two blocks: `jcore/dynamic-archive` (archive with filters,
 search, sorting, pagination or load more) and `jcore/latest-posts` (latest or
