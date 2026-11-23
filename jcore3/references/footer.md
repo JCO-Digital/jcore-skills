@@ -1,8 +1,7 @@
 # Footer
 
 The footer's content is edited in **global content posts**, not in the
-template. Only the structure and the logo live in the theme. Reference
-project: `chefsdagarna`.
+template. Only the structure and the logo live in the theme.
 
 ## Pieces
 
