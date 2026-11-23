@@ -2,9 +2,8 @@
 
 The rest of this skill assumes **one site**. In a multisite project several
 sites share **one theme**, so check each rule for whether it hard-codes something
-that differs per site. Reference project: `vaskars-vivere` (two public sites,
-Vaskars and Vivere, that differ only in colours and logo; the network root is
-not public).
+that differs per site. The examples come from a network of two public sites
+that differ only in colours and logo (the network root is not public).
 
 ## The rule
 
@@ -46,12 +45,12 @@ Keyed by **blog ID**, not domain: the IDs are the same in every environment
 
 ```php
 function site_key(): ?string {
-	$sites = apply_filters( '<project>_sites', array( 2 => 'vaskars', 3 => 'vivere' ) );
+	$sites = apply_filters( '<project>_sites', array( 2 => 'site-a', 3 => 'site-b' ) );
 	return $sites[ get_current_blog_id() ] ?? null; // null: network root.
 }
 ```
 
-Everything per site hangs off this (`includes/sites.php` in vaskars-vivere):
+Everything per site hangs off this (e.g. in the theme's `includes/sites.php`):
 
 - **Colours.** theme.json holds the shared palette with **role-named slugs**
   (`brand`, `secondary`, `accent`, never `orange`: one slug is a different

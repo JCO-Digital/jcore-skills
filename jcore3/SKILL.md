@@ -135,10 +135,10 @@ the header doesn't stick at all. The fix lives in Lohko, not the theme:
   against the page:
   `.wp-site-blocks > :has(> .wp-block-lohko-nav-header:is([data-jsticky], .sticky):not(.is-overlay)) { display: contents; }`
 
-Fixed in the `signwell-new` project copy (commit "fix(nav-header): no
-jcore-utils spacer…"); check that a project's Lohko has it, and take it to
-master Lohko. Don't hide `#spacer_0` in theme CSS the way older projects did
-(jco-web, otava, eg-trading): that leaves the header not sticking. Check
+Master Lohko has the fix on its `fix/nav-header-sticky` branch (commit
+"fix(nav-header): no jcore-utils spacer…"); check that a project's Lohko has
+it. Don't hide `#spacer_0` in theme CSS the way some older projects did: that
+leaves the header not sticking. Check
 with the page scrolled: the header's top stays at 0 and `#spacer_0` is 0px
 tall.
 
@@ -205,9 +205,9 @@ content, not structure. Don't fake it with block styles on Ruudukko columns.
   invalidate saved blocks.
 - An item that stores an image or post ID goes in `silta_block_references()`
   (`'imageId' => 'post'`, also for media).
-- Reference: `signwell-new`'s `lohko/card-container` / `lohko/card-item`
-  (icon, title, text, link bar; the whole card is the link) and
-  `lohko/share` (share links built on the server from the shown post,
+- Examples of the pattern: a `lohko/card-container` / `lohko/card-item`
+  pair (icon, title, text, link bar; the whole card is the link) and a
+  `lohko/share` block (share links built on the server from the shown post,
   WordPress's own social icons via `block_core_social_link_get_icon()`).
 
 **Editable text around a template goes in Global Content.** A template is
@@ -504,7 +504,6 @@ them when a project starts. After that:
 - The deploy workflow's `paths` include `wp-content/plugins/lohko/`; the build
   job builds it.
 
-Reference project for all of this: `chefsdagarna`.
 
 ## Translations
 
@@ -574,7 +573,7 @@ to production. Pushing `develop` updates staging, so confirm before pushing.
 `.github/workflows/deploy.yml` uses `jco-digital/deploy-wp-action` (build job,
 then a `server-deploy` job per branch). Ilme ships it set up for `main` only,
 with the theme path `wp-content/themes/jcore-ilme/` and an empty server. For a
-new project, set it up like `chefsdagarna`:
+new project, set it up like this:
 
 - `on.push.branches`: `develop`, with `main` commented out (`# - main # Disabled
   until needed.`).
