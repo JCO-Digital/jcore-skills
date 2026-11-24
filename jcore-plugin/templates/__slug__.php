@@ -5,7 +5,6 @@
  * Description:       {{description}}
  * Version:           0.1.0
  * Requires at least: 6.7
- * Tested up to:      {{tested}}
  * Requires PHP:      8.2
 {{#requires}}
  * Requires Plugins:  {{requires}}

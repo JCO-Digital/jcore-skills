@@ -22,7 +22,7 @@ Every config file a JCORE plugin carries, what it's for, and the details that bi
 | `readme.txt` | wordpress.org-format readme | Shipped. It feeds the update popup (jcore-update 1.7+), Plugin Check and foonver's changelog. Header `Stable tag` is synced. Keep the "External services" section declaring update.jcore.fi. |
 | `README.md` | Developer docs: requirements, scripts, layout, REST routes, DB tables, filters, releasing | Not shipped. |
 | `LICENSE` | GPL-2.0 text | Copy from jcore-turva. |
-| main plugin file header | `Plugin URI`, `Version`, `Requires at least: 6.7`, `Tested up to`, `Requires PHP: 8.2`, `Author: J&Co Digital Oy`, `Text Domain`, `Domain Path: /languages` | The publish workflow greps the three requirement lines, so they must all be present. |
+| main plugin file header | `Plugin URI`, `Version`, `Requires at least: 6.7`, `Requires PHP: 8.2`, `Author: J&Co Digital Oy`, `Text Domain`, `Domain Path: /languages` | No `Tested up to`: Plugin Check fails it in the header (`plugin_header_tested_up_to_not_allowed`), so it lives only in `readme.txt`, where the publish workflow reads it. |
 
 ## Dependency versions
 

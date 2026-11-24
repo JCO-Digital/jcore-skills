@@ -21,7 +21,7 @@ A checklist for bringing a pre-2026 JCORE plugin (old release action, committed 
 
 - `composer require jcodigital/jcore-update:^1.7`
 - Load `vendor/autoload.php` if readable, and register the updater guarded by `class_exists( UpdateConfig::class )` (see `jcore-update.md`). In a plugin without a `Plugin` class, register it at file scope after the `jcore_plugins_loaded` filter, with a prefixed variable name (`$jcore_<word>_update_config`).
-- Add `Tested up to:` (and `Plugin URI`) to the header, and align `Version:` with the other header fields.
+- Add `Plugin URI` to the header and align `Version:` with the other header fields. Move `Tested up to:` out of the header into `readme.txt`: Plugin Check fails it in the header (`plugin_header_tested_up_to_not_allowed`), and the publish workflow reads it from `readme.txt`. A plugin whose release.yml has `ignore-codes: plugin_header_tested_up_to_not_allowed` for this can drop that line too.
 
 ## 3. Tooling
 
