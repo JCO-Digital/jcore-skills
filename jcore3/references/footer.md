@@ -10,13 +10,30 @@ template. Only the structure and the logo live in the theme.
   from the title), the `jco/global-content` block, and the Twig function
   `jcore_global_content('slug')`. Without the plugin the Twig function is a
   stub that prints nothing.
-- **`lohko/footer`** has four areas, `left`, `middle`, `right` and `bottom`, plus
-  a copyright row. Each area prints, in order:
+- **`lohko/footer`** has three areas in its top row, `left`, `middle` and
+  `right`, a `bottom` area below them, and a copyright row. Each area prints,
+  in order:
   1. the global content post with the slug `footer-<area>`
      (`footer-left`, `footer-middle`, …)
-  2. the WordPress menu at the location `footer_<area>`
-     (the theme registers `footer_left`, `footer_middle`, `footer_right`,
-     `footer_bottom` in `includes/setup.php`)
+  2. the WordPress menu at the location `footer_<area>`, dashes as
+     underscores (the theme registers `footer_left`, `footer_middle`,
+     `footer_right`, `footer_bottom` in `includes/setup.php`)
+- **One column = one area = one global content post.** Never put columns
+  (core columns, a Ruudukko grid) inside a footer global content post to get
+  more columns than the footer has: the editor can break them, and the
+  columns don't line up with the footer's own grid.
+- **More than three columns in the design:** set the footer's **Columns**
+  setting (`"columns":4`). That adds an area `middle-2` between `middle` and
+  `right`, with its own global content post `footer-middle-2` and menu
+  location `footer_middle_2` (register it in `includes/setup.php`), and the
+  block's grid gets the fourth column (class `columns-4`). If the design
+  needs even more, add the next area to Lohko the same way (`render.php`
+  lists the areas per number of columns; `style.scss` places them) rather
+  than nesting columns. The Columns setting isn't in master Lohko yet: a
+  project that needs it adds it to its own copy (`block.json` attribute
+  `columns`, the areas in `render.php`, `view.twig` looping them, the grid
+  in `style.scss`, a Columns control in `edit.js`) and takes it to master
+  Lohko.
 - **Lists of links are WordPress menus**, e.g. the footer navigation is the
   `footer_right` menu. `lohko/footer` prints an area's menu itself. To show a
   menu anywhere else (inside a global content post, a template part), use
@@ -49,9 +66,14 @@ landmarks. The same applies to the header part.
 
 ## Content setup (per site, in the admin)
 
-- Global Content posts titled `footer-left`, `footer-middle`, … with what the
-  design shows in each area (text, address, contact details, social links).
+- Global Content posts titled `footer-left`, `footer-middle`, … (and
+  `footer-middle-2` with four columns) with what the design shows in each
+  area (text, address, contact details, social links). Maailma names the
+  slug after the title, so title each post with its slug.
 - Menus assigned to the `footer_*` locations.
+- A theme that styles the footer's grid itself (`partials/_footer.scss`)
+  must match the specificity of Lohko's `.columns-4` rule
+  (`.wp-block-lohko-footer.columns-4`), or Lohko's grid wins.
 
 The footer's look (grid, spacing, decorative patterns) is styled in Lohko's
 `src/footer/style.scss` in the project copy, using theme.json presets.

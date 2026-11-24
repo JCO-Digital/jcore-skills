@@ -109,7 +109,9 @@ project's copy is a snapshot of it):
 - `lohko/navigation` (with logo, search, hamburger that turns into an X),
   `lohko/sliding-menu` (off-canvas drill-down menu), `lohko/simple-menu`,
   `lohko/header`.
-- `lohko/footer` with a logo setting (see `references/footer.md`).
+- `lohko/footer` with a logo setting (see `references/footer.md`). A design
+  with four footer columns needs its Columns setting, which isn't in master
+  Lohko yet: see `references/footer.md`.
 - `lohko/logocloud`, `lohko/copyright-date`, `lohko/rive-animation`.
 
 Widths are not set in Lohko: the template parts set them (`align`, and
@@ -135,10 +137,11 @@ the header doesn't stick at all. The fix lives in Lohko, not the theme:
   against the page:
   `.wp-site-blocks > :has(> .wp-block-lohko-nav-header:is([data-jsticky], .sticky):not(.is-overlay)) { display: contents; }`
 
-Master Lohko has the fix on its `fix/nav-header-sticky` branch (commit
-"fix(nav-header): no jcore-utils spacer…"); check that a project's Lohko has
-it. Don't hide `#spacer_0` in theme CSS the way some older projects did: that
-leaves the header not sticking. Check
+Master Lohko has the fix since v1.1.0 (v1.1.1 also makes the open mobile
+menu cover the screen edge to edge, items lined up with the logo, so the
+theme only colours it); check that a project's Lohko has it. Don't hide
+`#spacer_0` in theme CSS the way some older projects did: that leaves the
+header not sticking. Check
 with the page scrolled: the header's top stays at 0 and `#spacer_0` is 0px
 tall.
 
