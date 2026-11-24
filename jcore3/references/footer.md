@@ -22,18 +22,25 @@ template. Only the structure and the logo live in the theme.
   (core columns, a Ruudukko grid) inside a footer global content post to get
   more columns than the footer has: the editor can break them, and the
   columns don't line up with the footer's own grid.
-- **More than three columns in the design:** set the footer's **Columns**
-  setting (`"columns":4`). That adds an area `middle-2` between `middle` and
-  `right`, with its own global content post `footer-middle-2` and menu
-  location `footer_middle_2` (register it in `includes/setup.php`), and the
-  block's grid gets the fourth column (class `columns-4`). If the design
-  needs even more, add the next area to Lohko the same way (`render.php`
-  lists the areas per number of columns; `style.scss` places them) rather
-  than nesting columns. The Columns setting isn't in master Lohko yet: a
-  project that needs it adds it to its own copy (`block.json` attribute
-  `columns`, the areas in `render.php`, `view.twig` looping them, the grid
-  in `style.scss`, a Columns control in `edit.js`) and takes it to master
-  Lohko.
+- **More than three columns in the design (e.g. four columns in a row in
+  the Figma footer): a change in the project's Lohko copy.** Master Lohko
+  stays at three columns; don't take this change back to it. In the
+  project's `src/footer/`:
+  - `block.json`: an attribute `columns` (number, default 3).
+  - `render.php`: the list of areas for the number of columns, e.g. with 4
+    `left`, `middle`, `middle-2`, `right`, `bottom`, passed to the template
+    as `areas`, and a wrapper class `columns-4`.
+  - `view.twig`: loop `areas` instead of the fixed list; the menu location
+    is `'footer_' ~ area|replace({'-': '_'})`.
+  - `style.scss`: the grid for `.columns-4`
+    (`"left middle middle-2 right"` and the bottom row under all four).
+  - `edit.js`: a Columns control, so the setting shows in the editor.
+
+  Then in the theme: the footer part sets `"columns":4`, `includes/setup.php`
+  registers the new menu location (`footer_middle_2`), and the new area gets
+  its own global content post (`footer-middle-2`). The block renders on the
+  server, so the change needs no deprecation. More columns than four: add
+  the next area the same way.
 - **Lists of links are WordPress menus**, e.g. the footer navigation is the
   `footer_right` menu. `lohko/footer` prints an area's menu itself. To show a
   menu anywhere else (inside a global content post, a template part), use

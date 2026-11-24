@@ -109,9 +109,9 @@ project's copy is a snapshot of it):
 - `lohko/navigation` (with logo, search, hamburger that turns into an X),
   `lohko/sliding-menu` (off-canvas drill-down menu), `lohko/simple-menu`,
   `lohko/header`.
-- `lohko/footer` with a logo setting (see `references/footer.md`). A design
-  with four footer columns needs its Columns setting, which isn't in master
-  Lohko yet: see `references/footer.md`.
+- `lohko/footer` with a logo setting and three columns in its top row (see
+  `references/footer.md`). A design with more footer columns is a change in
+  the project's own Lohko copy, not in master Lohko: see the same file.
 - `lohko/logocloud`, `lohko/copyright-date`, `lohko/rive-animation`.
 
 Widths are not set in Lohko: the template parts set them (`align`, and
